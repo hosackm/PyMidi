@@ -16,4 +16,4 @@ As long as you have libportmidi installed everything should work.  If it's insta
 ## Features
 MIDI Device Input
 
-![imgur-gif](../blob/master/img/pymidi_720_ffmpeg.gif)
+![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
