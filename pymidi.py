@@ -1,9 +1,7 @@
 import sys
-from _pymidi import ffi  # , lib
+from _pymidi import ffi
 
-'''Only initialize Portmidi once'''
-SINGLETON = None
-'''Detect OS and use correct file extension for shared library'''
+# Detect OS and use correct file extension for shared library
 if sys.platform == 'darwin':
     ext = 'dylib'
 elif sys.platform.startswith('linux'):
@@ -11,6 +9,18 @@ elif sys.platform.startswith('linux'):
 else:  # win32 or cygwin
     ext = 'dll'
 lib = ffi.dlopen('.'.join(['libportmidi', ext]))
+# Only initialize Portmidi once
+SINGLETON = None
+
+
+class MidiException(Exception):
+    '''Raise this exception when something goes wrong.
+    Uses Portmidi\'s Pm_GetErrorText() to describe the error that occured'''
+    def __init__(self, errno):
+        self.errno = errno
+
+    def __str__(self):
+        return lib.Pm_GetErrorText(self.errno)
 
 
 class PmEvent():
@@ -31,10 +41,9 @@ class PmEvent():
     events_from_buffer(buf): returns a list of PmEvent instances
     from a buffer of cdata PmEvent structs from the cffi interface
     '''
-    def __init__(self, message):
-        self.status = message & 0xFF
-        self.key = (message >> 8) & 0xFF
-        self.vel = (message >> 16) & 0xFF
+    def __init__(self, message, timestamp=0):
+        self.message = message
+        self.timestamp = timestamp
 
     @classmethod
     def events_from_buffer(cls, buf, gen=False):
@@ -57,32 +66,44 @@ class PmEvent():
         message = ((0x80 << 16) & 0xFF0000)
         message |= ((key << 8) & 0xFF00)
         message |= 0x7F
-        return cls(message, 0)
+        return cls(message)
+
+    def get_status(self):
+        'Return the status of this PmEvent'
+        return self.message & 0xFF
+
+    def get_key(self):
+        'Return the key (data1) of this PmEvent'
+        return (self.message >> 8) & 0xFF
+
+    def get_velocity(self):
+        'Return the velocity (data2) of this PmEvent'
+        return (self.message >> 16) & 0xFF
 
     def is_note_on(self):
         '''Returns True if a PmEvent is a Note On event
         Otherwise returns False'''
-        return self.status == 0x90
+        return self.get_status() == 0x90
 
     def is_note_off(self):
         '''Returns True if a PmEvent is a Note Off event
         Otherwise returns False
         '''
-        return self.status == 0x80
+        return self.get_status() == 0x80
 
     def is_control(self):
         '''Returns True if a PmEvent is a Control event
         Otherwise returns False'''
-        return self.status == 0xB0
+        return self.get_status() == 0xB0
 
     def __str__(self):
         return repr(self)
 
     def __repr__(self):
         return 'PmEvent(Status: {}, Note: {}, Velocity: {})'.format(
-            self.status,
-            self.key,
-            self.vel)
+            self.get_status(),
+            self.get_key(),
+            self.get_vel())
 
 
 class Input(object):
@@ -112,11 +133,10 @@ class Input(object):
     def read(self, num_events=4096):
         '''_'''
         num_events = min(num_events, self.buffer_size)
-        num_events = lib.Pm_Read(self.stream, self.buffer, num_events)
-        if num_events < 0:
-            raise MidiException(num_events)
+        ret = lib.Pm_Read(self.stream, self.buffer, num_events)
+        if ret < 0:
+            raise MidiException(ret)
 
-        #events = self.buffer[0:num_events]
         s = slice(0, num_events)
         return PmEvent.events_from_buffer(self.buffer[s])
 
@@ -137,16 +157,6 @@ class Input(object):
 class Output(object):
     def __init__(self):
         pass
-
-
-class MidiException(Exception):
-    '''Raise this exception when something goes wrong.
-    Uses Portmidi\'s Pm_GetErrorText() to describe the error that occured'''
-    def __init__(self, errno):
-        self.errno = errno
-
-    def __str__(self):
-        return lib.Pm_GetErrorText(self.errno)
 
 
 def _is_instantiated():
