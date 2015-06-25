@@ -9,9 +9,13 @@ Run `python build_pymidi.py` and a file `_pymidi.py` will be created in the curr
 libpormidi, CFFI
 ```
 To install libportmidi on Mac type:
-`brew install portmidi`
+```
+brew install portmidi
+```
 To install CFFI type:
-`pip install CFFI`
+```
+pip install CFFI
+```
 
 As long as you have libportmidi installed in a normal location everything should work.  If it's installed in an odd location, make sure you make a local copy or let ffi know where it's location is before calling `ffi.dlopen()` at the top of `pymidi.py`
 
