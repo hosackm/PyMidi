@@ -16,4 +16,4 @@ As long as you have libportmidi installed everything should work.  If it's insta
 ## Features
 MIDI Device Input
 
-![imgur-gif](http://i.imgur.com/aIQq4eD.gif)
+![imgur-gif](http://i.imgur.com/MhzRn3y.gif)
