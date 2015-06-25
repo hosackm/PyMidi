@@ -159,8 +159,7 @@ class Input(object):
         if ret < 0:
             raise MidiException(ret)
 
-        s = slice(0, num_events)
-        return PmEvent.events_from_buffer(self.buffer[s])
+        return PmEvent.events_from_buffer(self.buffer[0:num_events])
 
     def poll(self):
         '''Returns True if events are ready otherwise False.
