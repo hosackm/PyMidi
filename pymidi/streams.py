@@ -1,7 +1,7 @@
 import sys
-from _pymidi import ffi
-from midilib import lib
-from types import PmEvent, MidiException
+from ._pymidi import ffi
+from .midilib import lib
+from .types import PmEvent, MidiException
 
 
 __all__ = ('Input', 'Output', 'MidiException')

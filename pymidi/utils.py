@@ -1,5 +1,5 @@
-from _pymidi import ffi
-from midilib import lib
+from ._pymidi import ffi
+from .midilib import lib
 from .types import PmDeviceInfo
 
 

@@ -3,3 +3,7 @@
 __pycache__/
 backup
 _pymidi.py
+venv
+dist
+build
+*egg-info
