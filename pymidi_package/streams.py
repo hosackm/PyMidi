@@ -1,33 +1,11 @@
 import sys
-from _pymidi import ffi
-from events import PmEvent
+from _pymidi import ffi, lib
+from types import PmEvent, MidiException
+#from events import PmEvent
 
 
 __all__ = ('Input', 'Output', 'MidiException')
-
-# Detect OS and use correct file extension for shared library
-if sys.platform == 'darwin':
-    ext = 'dylib'
-elif sys.platform.startswith('linux'):
-    ext = 'so'
-else:  # win32 or cygwin
-    ext = 'dll'
-lib = ffi.dlopen('.'.join(['libportmidi', ext]))
-# Only initialize Portmidi once
 SINGLETON = None
-
-
-class MidiException(Exception):
-    '''Raise this exception when something goes wrong.
-    Uses Portmidi\'s Pm_GetErrorText() to describe the error that occured'''
-    def __init__(self, text='', errno=None):
-        if errno is not None:
-            self.err = ffi.string(lib.Pm_GetErrorText(errno))
-        else:
-            self.err = text
-
-    def __str__(self):
-        return self.err
 
 
 class Input(object):
@@ -50,16 +28,6 @@ class Input(object):
         self.stream = None
 
         self.open_stream()
-        #pp_stream = ffi.new('PortMidiStream **')
-        #err = lib.Pm_OpenInput(pp_stream,
-        #                       device_id,
-        #                       self.PNULL,
-        #                       self.buffer_size,
-        #                       self.PNULL,
-        #                       self.PNULL)
-        #if err:
-        #    raise MidiException(errno=err)
-        #self.stream = pp_stream[0]
 
     def open_stream(self):
         pp_stream = ffi.new('PortMidiStream **')
@@ -88,7 +56,7 @@ class Input(object):
         if ret < 0:
             raise MidiException(errno=ret)
 
-        return PmEvent.events_from_buffer(self.buffer[0:num_events])
+        return PmEvent.events_from_buffer(self.buffer[0:ret])
 
     def poll(self):
         '''Returns True if events are ready otherwise False.
