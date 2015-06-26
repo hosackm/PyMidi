@@ -12,6 +12,12 @@ python pymidi/build_pymidi.py
 ```
 You can then test that pymidi was installed correctly by running `test.py`.  Make sure that you have libportmidi installed and a MIDI device connected to your computer.  `test.py` defaults to using
 
+## Examples
+There are 3 examples included:
+  1. `input.py` captures MIDI events on the device ID you pass on the command line.
+  2. `output.py` generates random MIDI events on the device ID you pass on the command line.
+  3. `passthru.py` passes any input MIDI events from device id #1 to device id #2 you pass on the command line.
+
 ## Dependencies
 ```
 libpormidi, CFFI
