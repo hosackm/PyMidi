@@ -28,6 +28,7 @@ pip install CFFI
 As long as you have libportmidi installed in a normal location everything should work.  If it's installed in an odd location, make sure you make a local copy or let ffi know where it's location is before `ffi.dlopen()` is called at the top of `midilib.py`
 
 ## Features
-MIDI Device Input
+MIDI Input
+MIDI Output
 
 ![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
