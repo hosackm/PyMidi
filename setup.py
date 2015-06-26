@@ -14,6 +14,7 @@ setup(
     install_requires=('cffi', ),
     license='MIT',
     zip_safe=True,
+    # figure this out cffi_modules=['pymidi/build_pymidi.py:ffi'],
     classifiers=(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
