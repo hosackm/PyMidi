@@ -1,5 +1,5 @@
 import sys
-from ._pymidi import ffi
+from _pymidi import ffi
 
 # detect OS and load lib
 if sys.platform.startswith('linux'):

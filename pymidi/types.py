@@ -1,5 +1,5 @@
-from ._pymidi import ffi
-from .midilib import lib
+from _pymidi import ffi
+from midilib import lib
 
 
 __all__ = ('PmDeviceInfo', 'MidiException', 'PmEvent')
@@ -70,7 +70,7 @@ class PmEvent():
 
     def get_status(self):
         'Return the status of this PmEvent'
-        return int((self.message >> 16) & 0xFF)
+        return int(self.message & 0xFF)
 
     def get_key(self):
         'Return the key (data1) of this PmEvent'
@@ -78,7 +78,7 @@ class PmEvent():
 
     def get_velocity(self):
         'Return the velocity (data2) of this PmEvent'
-        return int(self.message & 0xFF)
+        return int((self.message >> 16) & 0xFF)
 
     def is_note_on(self):
         '''Returns True if a PmEvent is a Note On event
@@ -109,9 +109,9 @@ class PmEvent():
         # make sure values are between 0 and 127
         velocity = max(0, min(127, velocity))
         key = max(0, min(127, key))
-        message = ((cls.NOTE_ON << 16) & 0xFF0000)
+        message = ((velocity << 16) & 0xFF0000)
         message |= ((key << 8) & 0xFF00)
-        message |= (velocity & 0xFF)
+        message |= (cls.NOTE_ON & 0xFF)
         return cls(message)
 
     @classmethod
@@ -119,9 +119,9 @@ class PmEvent():
         'Returns a Note Off PmEvent instance'
         # make sure key is between 0 and 127
         key = max(0, min(127, key))
-        message = ((cls.NOTE_OFF << 16) & 0xFF0000)
+        message = ((0x7F << 16) & 0xFF0000)
         message |= ((key << 8) & 0xFF00)
-        message |= 0x7F
+        message |= 0x80  # cls.NOTE_OFF
         return cls(message)
 
     def __str__(self):

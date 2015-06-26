@@ -1,7 +1,10 @@
 import sys
-from ._pymidi import ffi
-from .midilib import lib
-from .types import PmEvent, MidiException
+from _pymidi import ffi
+from midilib import lib
+from types import PmEvent, MidiException
+#from ._pymidi import ffi
+#from .midilib import lib
+#from .types import PmEvent, MidiException
 
 
 __all__ = ('Input', 'Output', 'MidiException')
@@ -77,6 +80,9 @@ class Output(object):
     PNULL = ffi.new('void **')[0]
 
     def __init__(self, device_id, buffer_size=4096):
+        if not _is_instantiated():
+            _instantiate_library()
+
         self.device_id = device_id
         self.buffer_size = buffer_size
         self.stream = None
@@ -111,7 +117,8 @@ class Output(object):
         try:
             assert(ret == 0)
         except AssertionError:
-            raise MidiException('Error writing PmEvent to stream')
+            raise MidiException(
+                'Error writing PmEvent to stream: {}'.format(ret))
 
     def write_many(self, events):
         num = len(events)
@@ -124,6 +131,10 @@ class Output(object):
             assert(ret == 0)
         except AssertionError:
             raise MidiException('Error writing PmEvents to stream')
+
+    def close(self):
+        'Close the Stream'
+        lib.Pm_Close(self.stream)
 
 
 def _is_instantiated():
