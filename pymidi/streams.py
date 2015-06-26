@@ -25,7 +25,6 @@ class Input(object):
         self.buffer = ffi.new('PmEvent []', buffer_size)
         self.device_id = device_id
         self.stream = None
-
         self.open_stream()
 
     def open_stream(self):
@@ -37,8 +36,8 @@ class Input(object):
                                    self.buffer_size,
                                    self.PNULL,
                                    self.PNULL)
-            assert(err == 0)
             self.stream = pp_stream[0]
+            assert(err == 0)
         except AssertionError:
             self.stream = None
             raise MidiException(text='Invalid Device ID')
@@ -75,8 +74,56 @@ class Input(object):
 
 
 class Output(object):
-    def __init__(self):
-        pass
+    PNULL = ffi.new('void **')[0]
+
+    def __init__(self, device_id, buffer_size=4096):
+        self.device_id = device_id
+        self.buffer_size = buffer_size
+        self.stream = None
+        self.open_stream()
+
+    def open_stream(self):
+        'Open portmidi Output Stream and assert that everything went well'
+        pp_stream = ffi.new('PortMidiStream **')
+        try:
+            err = lib.Pm_OpenOutput(pp_stream,
+                                    self.device_id,
+                                    self.PNULL,
+                                    self.buffer_size,
+                                    self.PNULL,
+                                    self.PNULL,
+                                    0)
+            self.stream = pp_stream[0]
+            assert(err == 0)
+        except AssertionError:
+            self.stream = None
+            raise MidiException(text='Invalid Device ID')
+
+    def is_open(self):
+        return self.stream is not None
+
+    def write_one(self, event):
+        cdata = ffi.new('PmEvent []', 1)
+        cdata[0].message = event.message
+        cdata[0].timestamp = event.timestamp
+
+        ret = lib.Pm_Write(self.stream, cdata, 1)
+        try:
+            assert(ret == 0)
+        except AssertionError:
+            raise MidiException('Error writing PmEvent to stream')
+
+    def write_many(self, events):
+        num = len(events)
+        cdata = ffi.new('PmEvent []', num)
+        for i, e in enumerate(events):
+            cdata[i].message, cdata[i].timestamp = e.message, e.timestamp
+
+        ret = lib.Pm_Write(self.stream, cdata, num)
+        try:
+            assert(ret == 0)
+        except AssertionError:
+            raise MidiException('Error writing PmEvents to stream')
 
 
 def _is_instantiated():

@@ -5,10 +5,6 @@ from .midilib import lib
 __all__ = ('PmDeviceInfo', 'MidiException', 'PmEvent')
 
 
-class PmDeviceInfo():
-    pass
-
-
 class MidiException(Exception):
     '''Raise this exception when something goes wrong.
     Uses Portmidi\'s Pm_GetErrorText() to describe the error that occured'''
@@ -63,37 +59,42 @@ class PmEvent():
     events_from_buffer(buf): returns a list of PmEvent instances
     from a buffer of cdata PmEvent structs from the cffi interface
     '''
+
+    NOTE_ON = 0x90
+    NOTE_OFF = 0x80
+    CONTROL = 0xB0
+
     def __init__(self, message, timestamp=0):
         self.message = message
         self.timestamp = timestamp
 
     def get_status(self):
         'Return the status of this PmEvent'
-        return self.message & 0xFF
+        return int((self.message >> 16) & 0xFF)
 
     def get_key(self):
         'Return the key (data1) of this PmEvent'
-        return (self.message >> 8) & 0xFF
+        return int((self.message >> 8) & 0xFF)
 
     def get_velocity(self):
         'Return the velocity (data2) of this PmEvent'
-        return (self.message >> 16) & 0xFF
+        return int(self.message & 0xFF)
 
     def is_note_on(self):
         '''Returns True if a PmEvent is a Note On event
         Otherwise returns False'''
-        return self.get_status() == 0x90
+        return self.get_status() == self.NOTE_ON
 
     def is_note_off(self):
         '''Returns True if a PmEvent is a Note Off event
         Otherwise returns False
         '''
-        return self.get_status() == 0x80
+        return self.get_status() == self.NOTE_OFF
 
     def is_control(self):
         '''Returns True if a PmEvent is a Control event
         Otherwise returns False'''
-        return self.get_status() == 0xB0
+        return self.get_status() == self.CONTROL
 
     @classmethod
     def events_from_buffer(cls, buf, gen=False):
@@ -105,15 +106,20 @@ class PmEvent():
     def create_note_on(cls, key, velocity=0):
         '''create_note_on(key) returns a Note On PmEvent with velocity = 0
         create_note_on(key, velocity) returns a Note On PmEvent'''
-        message = ((0x90 << 16) & 0xFF0000)
+        # make sure values are between 0 and 127
+        velocity = max(0, min(127, velocity))
+        key = max(0, min(127, key))
+        message = ((cls.NOTE_ON << 16) & 0xFF0000)
         message |= ((key << 8) & 0xFF00)
         message |= (velocity & 0xFF)
-        return cls(message, 0)
+        return cls(message)
 
     @classmethod
     def create_note_off(cls, key):
         'Returns a Note Off PmEvent instance'
-        message = ((0x80 << 16) & 0xFF0000)
+        # make sure key is between 0 and 127
+        key = max(0, min(127, key))
+        message = ((cls.NOTE_OFF << 16) & 0xFF0000)
         message |= ((key << 8) & 0xFF00)
         message |= 0x7F
         return cls(message)
