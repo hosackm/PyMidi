@@ -19,7 +19,8 @@ code = code.replace('typedef __builtin_va_list __darwin_va_list;', '')
 
 ffi = FFI()
 ffi.cdef(code)
+ffi.set_source('pymidi._pymidi', None)
+
 
 if __name__ == '__main__':
-    ffi.set_source('pymidi._pymidi', None)
     ffi.compile()

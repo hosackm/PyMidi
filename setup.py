@@ -1,4 +1,13 @@
 from setuptools import setup
+from setuptools.command.install import install
+import subprocess
+
+
+class CreatePyMidi(install):
+    'Create _pymidi.py file'
+    def run(self):
+        subprocess.Popen(['python pymidi/build_pymidi.py'], shell=True)
+        install.run(self)
 
 
 setup(
@@ -13,8 +22,7 @@ setup(
     package_dir={'pymidi': 'pymidi'},
     install_requires=('cffi', ),
     license='MIT',
-    zip_safe=True,
-    # figure this out cffi_modules=['pymidi/build_pymidi.py:ffi'],
+    zip_safe=False,
     classifiers=(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
@@ -27,5 +35,8 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4'
     ),
+    cmdclass={
+        'install': CreatePyMidi,
+    },
     extras_require={},
 )
