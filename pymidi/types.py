@@ -25,17 +25,12 @@ class PmEvent():
     '''Represents a Portmidi event.  A midi event is a 24 bit
     hex value that contains a status, an 8 bit key value, and
     an 8 bit velocity value.
-
     PmEvent(message) returns an instance of PmEvent from a 24 bit integer
-
     PmEvent also creates helper functions to instantiate events
     without having to deal with bit masking:
-
     create_note_on(key): returns a Note On PmEvent with velocity = 0
     create_note_on(key, velocity): returns a Note On PmEvent
-
     create_note_off(key): returns a Note Off PmEvent with velocity = 127
-
     events_from_buffer(buf): returns a list of PmEvent instances
     from a buffer of cdata PmEvent structs from the cffi interface
     '''

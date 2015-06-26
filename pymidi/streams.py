@@ -15,7 +15,6 @@ class Input(object):
     def __init__(self, device_id, buffer_size=4096):
         '''Initialize a new MIDI Input Stream and open it
         If the stream fails to open a MidiException will be raised.
-
         :param device_id
         :param buffer_size is the num of PmEvents that can be stored at a time
         '''
