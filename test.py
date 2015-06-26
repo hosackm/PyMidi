@@ -1,4 +1,4 @@
-from pymidi_package import *
+from pymidi import *
 
 
 def main():

@@ -1,4 +1,5 @@
-from _pymidi import ffi, lib
+from _pymidi import ffi
+from midilib import lib
 
 
 __all__ = ('PmDeviceInfo', 'MidiException', 'PmEvent')
@@ -19,6 +20,34 @@ class MidiException(Exception):
 
     def __str__(self):
         return self.err
+
+
+class PmDeviceInfo():
+    def __init__(self, structVersion, interf, name,
+                 input_id, output_id, opened):
+        self.structVersion = structVersion
+        self.interf = ffi.string(interf)
+        self.name = ffi.string(name)
+        self.input = input_id
+        self.output = output_id
+        self.opened = opened
+
+    @classmethod
+    def from_cdata(cls, cdata):
+        return PmDeviceInfo(cdata.structVersion, cdata.interf,
+                            cdata.name, cdata.input, cdata.output,
+                            cdata.opened)
+
+    def __repr__(self):
+        return '''PmDeviceInfo(
+    structVersion = {},
+    interf = {},
+    name = {},
+    input = {},
+    output = {},
+    opened = {})'''.format(self.structVersion,
+                           self.interf, self.name,
+                           self.input, self.output, self.opened)
 
 
 class PmEvent():

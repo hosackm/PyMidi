@@ -21,5 +21,5 @@ ffi = FFI()
 ffi.cdef(code)
 
 if __name__ == '__main__':
-    ffi.set_source('_pymidi', None)
+    ffi.set_source('pymidi._pymidi', None)
     ffi.compile()
