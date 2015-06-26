@@ -30,4 +30,5 @@ As long as you have libportmidi installed in a normal location everything should
 ## Features
 MIDI Device Input
 
+![gfycat](http://giant.gfycat.com/TiredMasculineDikkops.gif)
 ![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
