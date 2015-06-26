@@ -9,7 +9,7 @@ def main():
     import sys
     print('loading portmidi...')
     try:
-        i = Input(0)
+        i = Input(get_default_input_device_id())
     except MidiException:
         print('Unable to open MIDI device.  Make sure it\'s connected')
         sys.exit()

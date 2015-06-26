@@ -1,8 +1,16 @@
 # PyMidi
 Python wrappers for the Portmidi using CFFI
 
-## To Build
-Run `python build_pymidi.py` and a file `_pymidi.py` will be created in the same directory.  Then you can run `python pymidi.py` to start capturing MIDI events on the default MIDI input device.
+## To Install
+Run 
+```
+python setup.py install
+```
+Then run
+```
+python pymidi/build_pymidi.py
+```
+You can then test that pymidi was installed correctly by running `test.py`.  Make sure that you have libportmidi installed and a MIDI device connected to your computer.  `test.py` defaults to using
 
 ## Dependencies
 ```

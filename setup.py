@@ -3,11 +3,11 @@ from setuptools.command.install import install
 import subprocess
 
 
-class CreatePyMidi(install):
-    'Create _pymidi.py file'
-    def run(self):
-        subprocess.Popen(['python pymidi/build_pymidi.py'], shell=True)
-        install.run(self)
+#class CreatePyMidi(install):
+#    'Create _pymidi.py file'
+#    def run(self):
+#        install.run(self)
+#        subprocess.Popen(['python pymidi/build_pymidi.py'], shell=True)
 
 
 setup(
@@ -20,7 +20,7 @@ setup(
     packages=('pymidi', ),
     package_data={},
     package_dir={'pymidi': 'pymidi'},
-    install_requires=('cffi', ),
+    install_requires=['cffi', ],
     license='MIT',
     zip_safe=False,
     classifiers=(
@@ -35,8 +35,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4'
     ),
-    cmdclass={
-        'install': CreatePyMidi,
-    },
-    extras_require={},
+    #cmdclass={
+    #    'install': CreatePyMidi,
+    #},
 )
