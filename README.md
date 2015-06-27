@@ -37,4 +37,4 @@ As long as you have libportmidi installed in a normal location everything should
 MIDI Input
 MIDI Output
 
-![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
+![imgur-gif](https://github.com/hosackm/gifs_for_repos/blob/master/pymidi_720_ffmpeg.gif)
