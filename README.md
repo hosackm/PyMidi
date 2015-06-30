@@ -38,3 +38,8 @@ MIDI Input
 MIDI Output
 
 ![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
+
+## To Do
+  * gevent asynchronous I/O
+  * update API for simplicity
+  * handle channel masking and sysex messages
