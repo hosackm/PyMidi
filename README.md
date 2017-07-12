@@ -20,7 +20,7 @@ There are 3 examples included:
 
 ## Dependencies
 ```
-libpormidi, CFFI
+libportmidi, CFFI
 ```
 To install libportmidi on Mac type:
 ```
@@ -40,6 +40,7 @@ MIDI Output
 ![imgur-gif](../master/img/pymidi_720_ffmpeg.gif)
 
 ## To Do
+  * Windows/Linux support
   * gevent asynchronous I/O
   * update API for simplicity
   * handle channel masking and sysex messages
